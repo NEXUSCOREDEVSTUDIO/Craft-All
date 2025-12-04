@@ -1,0 +1,159 @@
+:root {
+    --bg-color: #ffffff;
+    --sidebar-bg: #f8f9fa;
+    --sidebar-border: #e9ecef;
+    --element-bg: #ffffff;
+    --element-border: #dee2e6;
+    --element-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    --text-color: #212529;
+    --accent-color: #1a73e8;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none; /* Prevent text selection while dragging */
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--sidebar-border);
+    background-color: var(--sidebar-bg);
+}
+
+.sidebar-header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+#search-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--element-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.elements-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0.5rem;
+}
+
+/* Playground */
+.playground {
+    flex: 1;
+    position: relative;
+    background-color: var(--bg-color);
+    overflow: hidden;
+}
+
+.controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    gap: 10px;
+}
+
+.control-btn {
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid var(--element-border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.2s;
+}
+
+.control-btn:hover {
+    background-color: #f1f3f4;
+}
+
+/* Element Styles */
+.element {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--element-bg);
+    border: 1px solid var(--element-border);
+    border-radius: 50px; /* Pill shape */
+    cursor: grab;
+    box-shadow: var(--element-shadow);
+    transition: transform 0.1s, box-shadow 0.1s;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.element:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-color: #c1c1c1;
+}
+
+.element:active {
+    cursor: grabbing;
+    transform: scale(0.98);
+}
+
+.element-emoji {
+    margin-right: 6px;
+    font-size: 1.1rem;
+}
+
+.element-name {
+    font-weight: 500;
+}
+
+/* Draggable instance on playground */
+.element-instance {
+    position: absolute;
+    z-index: 5;
+}
+
+.element-instance.dragging {
+    z-index: 100;
+    opacity: 0.9;
+    pointer-events: none; /* Let events pass through to check elements below */
+}
+
+/* New element animation */
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+.new-element {
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
