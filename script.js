@@ -119,6 +119,7 @@ function spawnElement(elementData, x, y, isNew = false) {
 
     // Mouse events for dragging within playground
     elDiv.addEventListener('mousedown', onMouseDown);
+    elDiv.addEventListener('touchstart', onTouchStart, { passive: false });
 
     playgroundContent.appendChild(elDiv);
     return elDiv;
@@ -168,6 +169,52 @@ function onMouseUp(e) {
     draggingElement = null;
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
+}
+
+// Touch Events
+function onTouchStart(e) {
+    if (e.touches.length > 1) return; // Ignore multi-touch
+    e.preventDefault(); // Prevent scrolling
+
+    draggingElement = e.currentTarget;
+    const rect = draggingElement.getBoundingClientRect();
+    const touch = e.touches[0];
+
+    offsetX = touch.clientX - rect.left;
+    offsetY = touch.clientY - rect.top;
+
+    draggingElement.classList.add('dragging');
+    draggingElement.style.zIndex = ++zIndexCounter;
+
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', onTouchEnd);
+}
+
+function onTouchMove(e) {
+    if (!draggingElement) return;
+    e.preventDefault(); // Prevent scrolling
+
+    const parentRect = playgroundContent.getBoundingClientRect();
+    const touch = e.touches[0];
+
+    let x = touch.clientX - parentRect.left - offsetX;
+    let y = touch.clientY - parentRect.top - offsetY;
+
+    draggingElement.style.left = `${x}px`;
+    draggingElement.style.top = `${y}px`;
+}
+
+function onTouchEnd(e) {
+    if (!draggingElement) return;
+
+    draggingElement.classList.remove('dragging');
+
+    // Check for collisions
+    checkCollision(draggingElement);
+
+    draggingElement = null;
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', onTouchEnd);
 }
 
 // Collision Detection & Combination
